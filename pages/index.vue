@@ -7,8 +7,29 @@
               <div class="subtitle" v-html="decodeData(mainScreen.subtitle)"/>
               <a href="#products" class="button" type="button">{{mainScreen.buttonText}}</a>
           </div>
-
       </section>
+      <form name="contact" method="POST" data-netlify="true" id="my-form">
+          <p>
+              <label>Your Name: <input type="text" name="name" /></label>
+          </p>
+          <p>
+              <label>Your Email: <input type="email" name="email" /></label>
+          </p>
+          <p>
+              <label>Your Role:
+                <select name="role[]" multiple>
+                  <option value="leader">Leader</option>
+                  <option value="follower">Follower</option>
+                </select>
+              </label>
+          </p>
+          <p>
+              <label>Message: <textarea name="message"></textarea></label>
+          </p>
+          <p>
+              <button type="submit" @click="onSubmit">Send</button>
+          </p>
+      </form>
    <div class="products-container" id="products">
      <div
       v-if="products && products.length > 0"
@@ -71,6 +92,9 @@ export default {
     decodeData(data) {
       return documentToHtmlString(data);
     },
+    onSubmit() {
+      alert("Thank you!");
+    }
   }
 }
 </script>
