@@ -1,11 +1,10 @@
 const pkg = require('./package')
-const config = require('./.contentful.json')
 
 module.exports = {
   mode: 'universal',
   env: {
-      CTF_SPACE_ID: config.CTF_SPACE_ID,
-      CTF_CDA_ACCESS_TOKEN: config.CTF_CDA_ACCESS_TOKEN,
+    CTF_SPACE_ID: process.env.CTF_SPACE_ID,
+    CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN
   },
   /*
   ** Headers of the page
@@ -43,7 +42,10 @@ module.exports = {
   /*
   ** Nuxt.js modules
   */
-  modules: ['@nuxtjs/style-resources'],
+  modules: [
+      '@nuxtjs/style-resources',
+      '@nuxtjs/dotenv'
+  ],
   styleResources: {
     scss: [
       'assets/scss/variables.scss',
@@ -59,7 +61,9 @@ module.exports = {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
-
+      config.node = {
+        fs: "empty"
+      };
     }
   }
 }
