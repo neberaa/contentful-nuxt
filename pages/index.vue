@@ -1,41 +1,23 @@
 <template>
   <section class="container">
       <header class="header"></header>
-      <section class="main-screen" :style="{'background-image': `url(${mainScreen.background.fields.file.url})`}">
-          <div class="main-content">
-              <h1 class="title">{{mainScreen.title}}</h1>
-              <div class="subtitle" v-html="decodeData(mainScreen.subtitle)"/>
-              <a href="#products" class="button" type="button">{{mainScreen.buttonText}}</a>
-          </div>
+      <section class="main-screen">
+          <transition-group name="fade500">
+              <img class="background" key="main-image" :src="mainScreen.background.fields.file.url" :alt="mainScreen.title" v-show="loaded" @load="loaded = !loaded">
+              <div class="main-content" key="main-content" v-show="loaded">
+                  <h1 class="title">{{mainScreen.title}}</h1>
+                  <div class="subtitle" v-html="decodeData(mainScreen.subtitle)"/>
+                  <a href="#products" class="button" type="button">{{mainScreen.buttonText}}</a>
+              </div>
+          </transition-group>
+          <loader v-show="!loaded"></loader>
       </section>
-      <form name="contact" method="POST" data-netlify="true" id="my-form">
-          <p>
-              <label>Your Name: <input type="text" name="name" /></label>
-          </p>
-          <p>
-              <label>Your Email: <input type="email" name="email" /></label>
-          </p>
-          <p>
-              <label>Your Role:
-                <select name="role[]" multiple>
-                  <option value="leader">Leader</option>
-                  <option value="follower">Follower</option>
-                </select>
-              </label>
-          </p>
-          <p>
-              <label>Message: <textarea name="message"></textarea></label>
-          </p>
-          <p>
-              <button type="submit" @click="onSubmit">Send</button>
-          </p>
-      </form>
-   <div class="products-container" id="products">
-     <div
-      v-if="products && products.length > 0"
-      class="product"
-      v-for="(product, i) in products"
-      :key="`product-${i}`">
+      <div class="products-container" id="products">
+        <div
+          v-if="products && products.length > 0"
+          class="product"
+          v-for="(product, i) in products"
+          :key="`product-${i}`">
          <h1>{{product.fields.title}}</h1>
          <p>{{product.fields.description}}</p>
          <div class="images" v-for="image in product.fields.images">
@@ -57,9 +39,18 @@
 <script>
 import {createClient} from '~/plugins/contentful.js';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
+import Loader from '~/components/Loader';
 
 const client = createClient();
 export default {
+  components: {
+    Loader
+  },
+    data() {
+        return {
+            loaded: false
+        };
+    },
   asyncData() {
     return Promise.all([
       client.getEntries()
@@ -92,10 +83,7 @@ export default {
     decodeData(data) {
       return documentToHtmlString(data);
     },
-    onSubmit() {
-      alert("Thank you!");
-    }
-  }
+  },
 }
 </script>
 
@@ -120,6 +108,15 @@ export default {
     background-size: cover;
     background-position: center;
     position: relative;
+    overflow: hidden;
+    .background {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        object-fit: cover;
+    }
     .main-content {
         @include center();
         .title {
@@ -132,6 +129,5 @@ export default {
             color: $white;
         }
     }
-
 }
 </style>

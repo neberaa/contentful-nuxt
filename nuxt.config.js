@@ -21,6 +21,8 @@ module.exports = {
     ]
   },
 
+  transition: 'fade500',
+
   /*
   ** Customize the progress-bar color
   */
@@ -48,8 +50,7 @@ module.exports = {
   ],
   styleResources: {
     scss: [
-      'assets/scss/variables.scss',
-      'assets/scss/mixins.scss'
+      'assets/scss/main.scss'
     ]
   },
 
