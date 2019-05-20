@@ -1,6 +1,8 @@
 <template>
   <section class="container">
-      <header class="header"></header>
+      <header class="header">
+      <nuxt-link to="/wishlist" v-show="this.wishList.length > 0">Wishlist</nuxt-link>
+      </header>
       <section class="main-screen">
           <transition-group name="fade500">
               <img class="background" key="main-image" :src="mainScreen.background.fields.file.url" :alt="mainScreen.title" v-show="loaded" @load="loaded = !loaded">
@@ -12,45 +14,33 @@
           </transition-group>
           <loader v-show="!loaded"></loader>
       </section>
-      <div class="products-container" id="products">
-        <div
-          v-if="products && products.length > 0"
-          class="product"
-          v-for="(product, i) in products"
-          :key="`product-${i}`">
-         <h1>{{product.fields.title}}</h1>
-         <p>{{product.fields.description}}</p>
-         <div class="images" v-for="image in product.fields.images">
-             <img :src="`${image.fields.file.url}??w=300&h=300&fit=fill`" alt="">
-         </div>
-         <span class="price">${{product.fields.price}}</span>
-     </div>
-       <div class="feedback-container" v-if="feedback && feedback.length > 0">
-           <div class="feedback" v-for="(item, i) in feedback" :key="`feedback-${i}`">
-               <img :src="item.fields.avatar.fields.file.url" :alt="item.fields.avatar.fields.title">
-               <h3>{{item.fields.name}}</h3>
-               <div v-html="decodeData(item.fields.text)"/>
-           </div>
-       </div>
-   </div>
+      <products :products="products"></products>
+      <feedback :feeds="feedback"></feedback>
   </section>
 </template>
 
 <script>
 import {createClient} from '~/plugins/contentful.js';
-import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import Loader from '~/components/Loader';
+import Products from '~/components/Products';
+import Feedback from '~/components/Feedback';
+import decodeData from "~/mixins/decodeData";
 
 const client = createClient();
 export default {
   components: {
-    Loader
+    Loader,
+    Products,
+    Feedback
   },
-    data() {
-        return {
-            loaded: false
-        };
-    },
+  mixins: [decodeData],
+  data() {
+    return {
+      loaded: false,
+      wishList: [],
+      isLike: false
+    };
+  },
   asyncData() {
     return Promise.all([
       client.getEntries()
@@ -77,12 +67,21 @@ export default {
       if (this.data) {
         return this.data.filter(d => d.sys.contentType.sys.id === 'mainScreen')[0].fields;
       }
-    }
+    },
   },
   methods: {
-    decodeData(data) {
-      return documentToHtmlString(data);
-    },
+    loadWishList() {
+      if (localStorage.getItem('wishlist')) {
+        // try {
+        //   this.$store.commit('wishlist/toJSON', localStorage.getItem('wishlist'));
+        // } catch(e) {
+        //   localStorage.removeItem('wishlist');
+        // }
+      }
+    }
+  },
+  mounted() {
+    this.loadWishList();
   },
 }
 </script>
@@ -130,4 +129,12 @@ export default {
         }
     }
 }
+    .products-container {
+        .like {
+            color: orangered;
+            &.active {
+                color: green;
+            }
+        }
+    }
 </style>
