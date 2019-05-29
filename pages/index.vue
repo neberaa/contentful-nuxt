@@ -1,8 +1,5 @@
 <template>
   <section class="container">
-      <header class="header">
-      <nuxt-link to="/wishlist" v-show="this.wishList.length > 0">Wishlist</nuxt-link>
-      </header>
       <section class="main-screen">
           <transition-group name="fade500">
               <img class="background" key="main-image" :src="mainScreen.background.fields.file.url" :alt="mainScreen.title" v-show="loaded" @load="loaded = !loaded">
