@@ -37,7 +37,6 @@
     },
     methods: {
       updateWishList(id) {
-        console.log('prods and wl', this.products, this.wishList);
         if (this.$store.getters['wishlist/isAdded'](id)) {
           this.$store.commit('wishlist/remove', id);
         } else {

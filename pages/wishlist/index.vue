@@ -7,6 +7,7 @@
                 <div class="images" v-for="image in product.fields.images">
                     <img :src="`${image.fields.file.url}??w=300&h=300&fit=fill`" alt="">
                 </div>
+                <span @click="removeFromList(product.sys.id)">Remove from List</span>
                 <span class="price">${{product.fields.price}}</span>
             </div>
         </div>
@@ -16,11 +17,6 @@
 <script>
   export default {
     name: "wish-list",
-    data() {
-      return {
-        items: []
-      }
-    },
     computed: {
       wishList() {
         return this.$store.getters['wishlist/allWishlistItems'];
@@ -33,6 +29,13 @@
           return this.products.filter(item => this.wishList.includes(item.sys.id));
         }
       }
+    },
+    methods: {
+      removeFromList(id) {
+        this.$store.commit('wishlist/remove', id);
+        const parsed = this.$store.getters['wishlist/toJSON'];
+        localStorage.setItem('wishlist', parsed);
+      },
     },
     created() {
       this.$store.dispatch("data/fetchData");
