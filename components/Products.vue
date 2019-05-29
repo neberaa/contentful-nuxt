@@ -20,13 +20,6 @@
 <script>
   export default {
     name: "products",
-    // props: {
-    //   products: {
-    //     type: Array,
-    //     required: true,
-    //     default: []
-    //   }
-    // },
     computed: {
       wishList() {
         return this.$store.getters['wishlist/allWishlistItems'];
