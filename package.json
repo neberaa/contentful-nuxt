@@ -1,7 +1,7 @@
 {
-  "name": "contentful-nuxt",
+  "name": "DaForMe e-commerce",
   "version": "1.0.0",
-  "description": "My super-duper Nuxt.js project",
+  "description": "Fashion e-commerce for girls and women",
   "author": "Nebera Anton",
   "private": true,
   "scripts": {
